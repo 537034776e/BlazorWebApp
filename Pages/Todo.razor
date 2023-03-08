@@ -1,0 +1,43 @@
+﻿@page "/todo"
+
+<h3>Todo (@todos.Count(todo => !todo.IsDone))</h3>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            <input type="checkbox" @bind="todo.IsDone" />
+            <input @bind="todo.Title" />
+        </li>
+    }
+</ul>
+
+<input placeholder="Something todo" @bind="newTodo" />
+<button @onclick="AddTodo">Add todo</button>
+<button @onclick="RemoveTodo">Remove Last Todo</button>
+<p>@ErrorMessage</p>
+
+@code {
+    private List<TodoItem> todos = new();
+    private string? newTodo;
+    private string? ErrorMessage;
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            if(todos.Where(x=>x.Title==newTodo).FirstOrDefault()==null)
+            {
+                todos.Add(new TodoItem { Title = newTodo });
+                newTodo = string.Empty;
+            }
+            else
+            {
+                ErrorMessage="Todo is present.";
+            }
+        }    
+    }
+    private void RemoveTodo()
+    {
+            todos.RemoveAt(todos.Count-1);
+    }
+}
